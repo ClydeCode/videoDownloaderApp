@@ -19,7 +19,7 @@ namespace MusicDownloader
 
         public YoutubeConverterService _youtubeConverterService;
 
-        public ImageView thumbnail;
+        public ImageView _thumbnail;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -32,7 +32,7 @@ namespace MusicDownloader
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
 
-            thumbnail = FindViewById<ImageView>(Resource.Id.thumbnail);
+            _thumbnail = FindViewById<ImageView>(Resource.Id.thumbnail);
             Button downloadBtn = FindViewById<Button>(Resource.Id.downloadBtn);
 
             downloadBtn.Click += OnClickEvent;     
@@ -57,7 +57,7 @@ namespace MusicDownloader
 
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    thumbnail.SetImageBitmap(bitmapImage);
+                    _thumbnail.SetImageBitmap(bitmapImage);
                 });
 
                 await _youtubeConverterService.DownloadFile(url, downloadFilePath);
