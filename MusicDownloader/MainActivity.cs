@@ -42,7 +42,10 @@ namespace MusicDownloader
         {
             string url = Clipboard.GetTextAsync().Result;
 
-            if (url == null) return;
+            Uri uriResult;
+            bool result = Uri.TryCreate(url, UriKind.Absolute, out uriResult) && uriResult.Scheme == Uri.UriSchemeHttps;
+
+            if (result == false) return;
 
             await Task.Run(async () =>
             {
