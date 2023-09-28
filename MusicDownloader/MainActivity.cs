@@ -6,26 +6,33 @@ using AndroidX.AppCompat.App;
 using Xamarin.Essentials;
 using System;
 using System.IO;
-using YoutubeExplode;
-using YoutubeExplode.Videos.Streams;
-using System.Linq;
 using System.Threading.Tasks;
+using Android.Graphics;
+using System.Net;
 
 namespace MusicDownloader
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity
     {
+        public readonly string downloadFilePath = Android.OS.Environment.ExternalStorageDirectory.Path + "/Download/MusicDownloader";
+
+        public YoutubeConverterService _youtubeConverterService;
+
+        public ImageView thumbnail;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Platform.Init(this, savedInstanceState);
 
+            _youtubeConverterService = new YoutubeConverterService();
+
             EnsurePermissions();
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
 
-            ImageView thumbnail = FindViewById<ImageView>(Resource.Id.thumbnail);
+            thumbnail = FindViewById<ImageView>(Resource.Id.thumbnail);
             Button downloadBtn = FindViewById<Button>(Resource.Id.downloadBtn);
 
             downloadBtn.Click += OnClickEvent;     
@@ -33,31 +40,25 @@ namespace MusicDownloader
 
         async void OnClickEvent(object sender, EventArgs e)
         {
-            string url = await Clipboard.GetTextAsync();
+            string url = Clipboard.GetTextAsync().Result;
 
-            if (url != null)
+            if (url == null) return;
+
+            await Task.Run(async () =>
             {
-                await Task.Run(async () =>
+                Directory.CreateDirectory(downloadFilePath);
+
+                var videoInfo = _youtubeConverterService.GetVideoInfoAsync(url).Result;
+
+                var bitmapImage = GetBitmapFromUrl(videoInfo.Thumbnails[0].Url);
+
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    var downloadedFilePath = Android.OS.Environment.ExternalStorageDirectory.Path + "/Download/MusicDownloader"; ;
-
-                    Directory.CreateDirectory(downloadedFilePath);
-
-                    var youtube = new YoutubeClient();
-
-                    var streamManifest = await youtube.Videos.Streams.GetManifestAsync(url);
-
-                    // highest bitrate audio stream
-                    var streamInfo = streamManifest.GetAudioOnlyStreams()
-                                                    .Where(s => s.Container == Container.Mp4)
-                                                    .GetWithHighestBitrate();
-
-                    var video = await youtube.Videos.GetAsync(url);
-                    string fileName = video.Title.Replace('?', ' ');
-
-                    await youtube.Videos.Streams.DownloadAsync(streamInfo, downloadedFilePath + $"/{fileName}.mp3");
+                    thumbnail.SetImageBitmap(bitmapImage);
                 });
-            }
+
+                await _youtubeConverterService.DownloadFile(url, downloadFilePath);
+            });
         }
 
         async void EnsurePermissions()
@@ -69,6 +70,20 @@ namespace MusicDownloader
                 await Permissions.RequestAsync<Permissions.StorageRead>();
             if (writePerm == PermissionStatus.Denied) 
                 await Permissions.RequestAsync<Permissions.StorageWrite>();
+        }
+
+        private Bitmap GetBitmapFromUrl(string url)
+        {
+            using (WebClient webClient = new WebClient())
+            {
+                byte[] bytes = webClient.DownloadData(url);
+
+                if (bytes != null && bytes.Length > 0)
+                {
+                    return BitmapFactory.DecodeByteArray(bytes, 0, bytes.Length);
+                }
+            }
+            return null;
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

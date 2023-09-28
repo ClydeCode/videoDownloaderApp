@@ -6,17 +6,18 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="500px"
-        android:layout_height="500px"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="100px"
         android:id="@+id/thumbnail"
         android:contentDescription="thumbnail"/>
 
-    <Button
-        android:layout_width="300dp"
-        android:layout_height="70dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="400dp"
-        android:id="@+id/downloadBtn"
-        android:text="Download"/>
+	<Button
+		android:layout_width="300dp"
+		android:layout_height="70dp"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="400dp"
+		android:id="@+id/downloadBtn"
+		android:text="Download"/>
 </RelativeLayout>
