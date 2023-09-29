@@ -15,13 +15,13 @@ namespace MusicDownloader
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity
     {
-        public readonly string downloadFilePath = Android.OS.Environment.ExternalStorageDirectory.Path + "/Download/MusicDownloader";
+        private readonly string downloadFilePath = Android.OS.Environment.ExternalStorageDirectory.Path + "/Download/MusicDownloader";
 
-        public YoutubeConverterService _youtubeConverterService;
+        private YoutubeConverterService _youtubeConverterService;
 
-        public ImageView _thumbnail;
-        public ProgressBar _progressBar;
-        public Button _downloadBtn;
+        private ImageView _thumbnail;
+        private ProgressBar _progressBar;
+        private Button _downloadBtn;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -41,7 +41,7 @@ namespace MusicDownloader
             _downloadBtn.Click += OnClickEvent;     
         }
 
-        async void OnClickEvent(object sender, EventArgs e)
+        private async void OnClickEvent(object sender, EventArgs e)
         {
             string url = Clipboard.GetTextAsync().Result;
 
@@ -80,7 +80,7 @@ namespace MusicDownloader
             if (progress == 100) _downloadBtn.Enabled = true;
         }
 
-        async void EnsurePermissions()
+        private async void EnsurePermissions()
         {
             var readPerm = Permissions.CheckStatusAsync<Permissions.StorageRead>().Result;
             var writePerm = Permissions.CheckStatusAsync<Permissions.StorageWrite>().Result;
