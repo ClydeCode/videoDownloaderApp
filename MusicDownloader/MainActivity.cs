@@ -21,6 +21,7 @@ namespace MusicDownloader
 
         public ImageView _thumbnail;
         public ProgressBar _progressBar;
+        public Button _downloadBtn;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -34,10 +35,10 @@ namespace MusicDownloader
             SetContentView(Resource.Layout.activity_main);
 
             _thumbnail = FindViewById<ImageView>(Resource.Id.thumbnail);
-            Button downloadBtn = FindViewById<Button>(Resource.Id.downloadBtn);
+            _downloadBtn = FindViewById<Button>(Resource.Id.downloadBtn);
             _progressBar = FindViewById<ProgressBar>(Resource.Id.progressBar);
 
-            downloadBtn.Click += OnClickEvent;     
+            _downloadBtn.Click += OnClickEvent;     
         }
 
         async void OnClickEvent(object sender, EventArgs e)
@@ -49,7 +50,11 @@ namespace MusicDownloader
 
             if (result == false) return;
 
+            _downloadBtn.Enabled = false;
+
             var progress = new Progress<double>(p => _progressBar.Progress = (int)(p * 100));
+
+            progress.ProgressChanged += ProgressChangedEvent;
 
             await Task.Run(async () =>
             {
@@ -61,11 +66,18 @@ namespace MusicDownloader
 
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    _thumbnail.SetImageBitmap(bitmapImage);  
+                    _thumbnail.SetImageBitmap(bitmapImage);
                 });
 
                 await _youtubeConverterService.DownloadFile(url, downloadFilePath, progress);
             });
+        }
+
+        private void ProgressChangedEvent(object sender, double e)
+        {
+            int progress = (int)(e * 100);
+
+            if (progress == 100) _downloadBtn.Enabled = true;
         }
 
         async void EnsurePermissions()

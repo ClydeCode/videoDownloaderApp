@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
 using YoutubeExplode.Videos;
-using System.Threading;
 
 namespace MusicDownloader
 {

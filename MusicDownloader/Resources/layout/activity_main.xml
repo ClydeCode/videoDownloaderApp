@@ -9,7 +9,7 @@
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="100px"
+        android:layout_marginTop="50dp"
         android:id="@+id/thumbnail"
         android:contentDescription="thumbnail"/>
 
@@ -17,7 +17,7 @@
 		android:layout_width="300dp"
 		android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="750px"
+        android:layout_marginTop="350dp"
 		style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
         android:id="@+id/progressBar"/>
 
@@ -27,5 +27,6 @@
 		android:layout_centerHorizontal="true"
 		android:layout_marginTop="400dp"
 		android:id="@+id/downloadBtn"
-		android:text="Download"/>
+		android:text="Download"
+        android:textSize="16dp"/>
 </RelativeLayout>
