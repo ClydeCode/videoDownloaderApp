@@ -22,7 +22,7 @@ namespace MusicDownloader
             return video;
         }
 
-		public async Task<bool> DownloadFile(string url, string downloadFilePath, IProgress<double> progress)
+		public async Task<bool> DownloadFile(string url, string downloadFilePath, Progress<double> progress)
 		{
             try
             {
