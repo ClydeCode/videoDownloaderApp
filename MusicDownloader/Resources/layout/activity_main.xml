@@ -13,6 +13,14 @@
         android:id="@+id/thumbnail"
         android:contentDescription="thumbnail"/>
 
+	<ProgressBar
+		android:layout_width="300dp"
+		android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="750px"
+		style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Horizontal"
+        android:id="@+id/progressBar"/>
+
 	<Button
 		android:layout_width="300dp"
 		android:layout_height="70dp"

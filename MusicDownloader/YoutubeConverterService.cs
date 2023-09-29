@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using YoutubeExplode;
 using YoutubeExplode.Videos.Streams;
 using YoutubeExplode.Videos;
+using System.Threading;
 
 namespace MusicDownloader
 {
@@ -22,7 +23,7 @@ namespace MusicDownloader
             return video;
         }
 
-		public async Task<bool> DownloadFile(string url, string downloadFilePath)
+		public async Task<bool> DownloadFile(string url, string downloadFilePath, IProgress<double> progress)
 		{
             try
             {
@@ -39,7 +40,7 @@ namespace MusicDownloader
 
                 string fileName = video.Title.Replace('?', ' ');
 
-                await youtube.Videos.Streams.DownloadAsync(streamInfo, downloadFilePath + $"/{fileName}.mp3");
+                await youtube.Videos.Streams.DownloadAsync(streamInfo, downloadFilePath + $"/{fileName}.mp3", progress);
 
                 return true;
             }

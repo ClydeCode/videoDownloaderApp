@@ -20,6 +20,7 @@ namespace MusicDownloader
         public YoutubeConverterService _youtubeConverterService;
 
         public ImageView _thumbnail;
+        public ProgressBar _progressBar;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -34,6 +35,7 @@ namespace MusicDownloader
 
             _thumbnail = FindViewById<ImageView>(Resource.Id.thumbnail);
             Button downloadBtn = FindViewById<Button>(Resource.Id.downloadBtn);
+            _progressBar = FindViewById<ProgressBar>(Resource.Id.progressBar);
 
             downloadBtn.Click += OnClickEvent;     
         }
@@ -47,6 +49,8 @@ namespace MusicDownloader
 
             if (result == false) return;
 
+            var progress = new Progress<double>(p => _progressBar.Progress = (int)(p * 100));
+
             await Task.Run(async () =>
             {
                 Directory.CreateDirectory(downloadFilePath);
@@ -57,10 +61,10 @@ namespace MusicDownloader
 
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    _thumbnail.SetImageBitmap(bitmapImage);
+                    _thumbnail.SetImageBitmap(bitmapImage);  
                 });
 
-                await _youtubeConverterService.DownloadFile(url, downloadFilePath);
+                await _youtubeConverterService.DownloadFile(url, downloadFilePath, progress);
             });
         }
 
