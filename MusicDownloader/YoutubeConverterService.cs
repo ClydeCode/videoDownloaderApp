@@ -32,8 +32,8 @@ namespace MusicDownloader
 
                 // highest bitrate audio stream
                 var streamInfo = streamManifest.GetAudioOnlyStreams()
-                                                .Where(s => s.Container == Container.Mp4)
-                                                .GetWithHighestBitrate();
+                                               .Where(s => s.Container == Container.Mp4)
+                                               .GetWithHighestBitrate();
 
                 var video = await youtube.Videos.GetAsync(url);
 
